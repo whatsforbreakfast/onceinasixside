@@ -6,6 +6,20 @@
     <title>Welcome Pack | Once In A Six Side</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @font-face {
+    font-family: 'Cybrpnuk';
+    /* Since the file is in the same place as index.html, we just use the name */
+    src: url('Cybrpnuk2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+h1 {
+    font-family: 'Cybrpnuk', sans-serif !important;
+    /* This makes it big and gives it that cyberpunk spacing */
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
         .model-card:hover img { transform: scale(1.05); transition: 0.3s; }
         .badge-new { background: #e11d48; color: white; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; position: absolute; top: 10px; right: 10px; }
     </style>
