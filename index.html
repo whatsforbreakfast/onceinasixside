@@ -339,6 +339,7 @@ h1 {
     let artists = [];
     let currentIndex = 0;
 
+    // --- LOGO CAROUSEL LOGIC ---
     async function fetchLogos() {
         try {
             const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folderPath}`);
@@ -387,8 +388,7 @@ h1 {
         renderLogos();
     }
 
-    fetchLogos();
-
+    // --- LATEST ADDITIONS SLIDER LOGIC ---
     let latestSlideshows = {}; 
 
     async function fetchLatestAdditions() {
@@ -407,7 +407,7 @@ h1 {
                 groups[artistKey].push(file);
             });
 
-           const sortedArtists = Object.keys(groups).sort((a, b) => {
+            const sortedArtists = Object.keys(groups).sort((a, b) => {
                 return groups[b][0].name.localeCompare(groups[a][0].name);
             }).slice(0, 2);
 
@@ -449,146 +449,134 @@ h1 {
                     </div>
                 `;
             });
-
-function changeSlide(slotIndex, direction) {
-    const slider = latestSlideshows[slotIndex];
-    slider.currentIndex = (slider.currentIndex + direction + slider.files.length) % slider.files.length;
-    updateSlideUI(slotIndex);
-}
-            
-   function updateSlideUI(slotIndex) {
-    const slider = latestSlideshows[slotIndex];
-    const file = slider.files[slider.currentIndex];
-    
-    const img = document.getElementById(`img-${slotIndex}`);
-    const title = document.getElementById(`title-${slotIndex}`);
-    const counter = document.getElementById(`counter-${slotIndex}`);
-
-    img.style.opacity = '0.3';
-    setTimeout(() => {
-        img.src = `latest_releases/${file.name}`;
-        
-        // CLEANING LOGIC:
-        // 1. Get name after hyphen (Model Name)
-        let cleanName = file.name.split('-')[1] || 'New Model';
-        // 2. Remove the file extension (e.g., .webp)
-        cleanName = cleanName.split('.')[0];
-        // 3. Remove trailing numbers (e.g., _1, _2) and underscores
-        cleanName = cleanName.replace(/_\d+$/, '').replace(/_/g, ' ');
-        
-        title.innerText = cleanName;
-        
-        if(counter) counter.innerText = `${slider.currentIndex + 1} / ${slider.files.length}`;
-        img.style.opacity = '1';
-    }, 200);
-}
-
-    fetchLatestAdditions();
-
-// This tells the script which button corresponds to which folder
-const vaultFolders = {
-    originals: 'pack_originals',
-    donations: 'pack_donations',
-    free: 'pack_free'
-};
-
-let currentGallery = [];
-let galleryIndex = 0;
-
-async function filterVault(category) {
-    const grid = document.getElementById('vault-grid');
-    const buttons = document.querySelectorAll('.vault-tab');
-    const subheader = document.getElementById('vault-subheader');
-    
-    buttons.forEach(btn => {
-        btn.classList.remove('active');
-        if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
-    });
-
-    category === 'free' ? subheader.classList.remove('hidden') : subheader.classList.add('hidden');
-    grid.innerHTML = '<div class="text-zinc-500 animate-pulse col-span-full">Scanning directory...</div>';
-
-    try {
-        const folder = vaultFolders[category];
-        const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folder}`);
-        const data = await response.json();
-        const allFiles = data.filter(file => file.name.match(/\.(png|jpe?g|webp|avif)$/i));
-
-        // Group files by base name (e.g., "superglue_holders" is the key)
-        const groups = {};
-        allFiles.forEach(file => {
-            const baseName = file.name.split('.')[0].replace(/_\d+$/, ''); // Removes _1, _2 etc
-            if (!groups[baseName]) groups[baseName] = [];
-            groups[baseName].push(file);
-        });
-
-        grid.innerHTML = ''; 
-        Object.keys(groups).forEach(baseName => {
-            const groupFiles = groups[baseName];
-            const primaryFile = groupFiles[0];
-            
-            let artistName = "";
-            let modelName = baseName.replace(/_/g, ' ');
-
-            if (category === 'donations' && baseName.includes('-')) {
-                const parts = baseName.split('-');
-                artistName = parts[0].replace(/_/g, ' ');
-                modelName = parts[1].replace(/_/g, ' ');
-            }
-
-            const card = document.createElement('div');
-            card.className = "group bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-800 hover:border-[#c7ff2e]/50 cursor-pointer transition-all duration-300";
-            // Pass the entire group of images to the lightbox opener
-            card.onclick = () => openLightbox(groupFiles, folder, modelName);
-
-            card.innerHTML = `
-                <div class="aspect-square overflow-hidden bg-black relative">
-                    <img src="https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${primaryFile.name}" 
-                         class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
-                    ${groupFiles.length > 1 ? `<span class="absolute bottom-2 right-2 bg-black/80 text-[#c7ff2e] text-[10px] font-bold px-2 py-1 rounded-md border border-[#c7ff2e]/30">+${groupFiles.length - 1} More</span>` : ''}
-                </div>
-                <div class="p-3">
-                    ${artistName ? `<p class="text-[9px] font-bold text-[#c7ff2e] uppercase mb-1">${artistName}</p>` : ''}
-                    <p class="text-[10px] font-black text-zinc-500 uppercase truncate">${modelName}</p>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-    } catch (error) {
-        grid.innerHTML = '<div class="text-red-900 col-span-full text-center">Connection to Vault lost.</div>';
+        } catch (e) { console.error(e); }
     }
-}
 
-// Lightbox Controls
-function openLightbox(files, folder, title) {
-    currentGallery = files.map(f => `https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${f.name}`);
-    galleryIndex = 0;
-    document.getElementById('lightbox-title').innerText = title;
-    document.getElementById('lightbox').classList.remove('hidden');
-    updateLightboxUI();
-}
+    function changeSlide(slotIndex, direction) {
+        const slider = latestSlideshows[slotIndex];
+        slider.currentIndex = (slider.currentIndex + direction + slider.files.length) % slider.files.length;
+        updateSlideUI(slotIndex);
+    }
+            
+    function updateSlideUI(slotIndex) {
+        const slider = latestSlideshows[slotIndex];
+        const file = slider.files[slider.currentIndex];
+        const img = document.getElementById(`img-${slotIndex}`);
+        const title = document.getElementById(`title-${slotIndex}`);
+        const counter = document.getElementById(`counter-${slotIndex}`);
 
-function closeLightbox() {
-    document.getElementById('lightbox').classList.add('hidden');
-}
+        img.style.opacity = '0.3';
+        setTimeout(() => {
+            img.src = `latest_releases/${file.name}`;
+            let cleanName = file.name.split('-')[1] || 'New Model';
+            cleanName = cleanName.split('.')[0].replace(/_\d+$/, '').replace(/_/g, ' ');
+            title.innerText = cleanName;
+            if(counter) counter.innerText = `${slider.currentIndex + 1} / ${slider.files.length}`;
+            img.style.opacity = '1';
+        }, 200);
+    }
 
-function updateLightboxUI() {
-    document.getElementById('lightbox-img').src = currentGallery[galleryIndex];
-    document.getElementById('lightbox-counter').innerText = `${galleryIndex + 1} / ${currentGallery.length}`;
-    
-    // Hide arrows if only one image
-    const btns = document.querySelectorAll('#lightbox .slider-btn');
-    btns.forEach(b => b.style.display = currentGallery.length > 1 ? 'flex' : 'none');
-}
+    // --- THE VAULT LOGIC ---
+    const vaultFolders = {
+        originals: 'pack_originals',
+        donations: 'pack_donations',
+        free: 'pack_free'
+    };
 
-function changeLightboxSlide(dir) {
-    galleryIndex = (galleryIndex + dir + currentGallery.length) % currentGallery.length;
-    updateLightboxUI();
-}
-    // Initialize the Vault on page load
-filterVault('originals');
+    let currentGallery = [];
+    let galleryIndex = 0;
+
+    async function filterVault(category) {
+        const grid = document.getElementById('vault-grid');
+        const buttons = document.querySelectorAll('.vault-tab');
+        const subheader = document.getElementById('vault-subheader');
+        
+        buttons.forEach(btn => {
+            btn.classList.remove('active');
+            if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
+        });
+
+        category === 'free' ? subheader.classList.remove('hidden') : subheader.classList.add('hidden');
+        grid.innerHTML = '<div class="text-zinc-500 animate-pulse col-span-full">Scanning directory...</div>';
+
+        try {
+            const folder = vaultFolders[category];
+            const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folder}`);
+            const data = await response.json();
+            const allFiles = data.filter(file => file.name.match(/\.(png|jpe?g|webp|avif)$/i));
+
+            const groups = {};
+            allFiles.forEach(file => {
+                const baseName = file.name.split('.')[0].replace(/_\d+$/, ''); 
+                if (!groups[baseName]) groups[baseName] = [];
+                groups[baseName].push(file);
+            });
+
+            grid.innerHTML = ''; 
+            Object.keys(groups).forEach(baseName => {
+                const groupFiles = groups[baseName];
+                const primaryFile = groupFiles[0];
+                let artistName = "";
+                let modelName = baseName.replace(/_/g, ' ');
+
+                if (category === 'donations' && baseName.includes('-')) {
+                    const parts = baseName.split('-');
+                    artistName = parts[0].replace(/_/g, ' ');
+                    modelName = parts[1].replace(/_/g, ' ');
+                }
+
+                const card = document.createElement('div');
+                card.className = "group bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-800 hover:border-[#c7ff2e]/50 cursor-pointer transition-all duration-300";
+                card.onclick = () => openLightbox(groupFiles, folder, modelName);
+
+                card.innerHTML = `
+                    <div class="aspect-square overflow-hidden bg-black relative">
+                        <img src="https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${primaryFile.name}" 
+                             class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
+                        ${groupFiles.length > 1 ? `<span class="absolute bottom-2 right-2 bg-black/80 text-[#c7ff2e] text-[10px] font-bold px-2 py-1 rounded-md border border-[#c7ff2e]/30">+${groupFiles.length - 1} More</span>` : ''}
+                    </div>
+                    <div class="p-3">
+                        ${artistName ? `<p class="text-[9px] font-bold text-[#c7ff2e] uppercase mb-1">${artistName}</p>` : ''}
+                        <p class="text-[10px] font-black text-zinc-500 uppercase truncate">${modelName}</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        } catch (error) {
+            grid.innerHTML = '<div class="text-red-900 col-span-full text-center">Connection to Vault lost.</div>';
+        }
+    }
+
+    // --- LIGHTBOX CONTROLS ---
+    function openLightbox(files, folder, title) {
+        currentGallery = files.map(f => `https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${f.name}`);
+        galleryIndex = 0;
+        document.getElementById('lightbox-title').innerText = title;
+        document.getElementById('lightbox').classList.remove('hidden');
+        updateLightboxUI();
+    }
+
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.add('hidden');
+    }
+
+    function updateLightboxUI() {
+        document.getElementById('lightbox-img').src = currentGallery[galleryIndex];
+        document.getElementById('lightbox-counter').innerText = `${galleryIndex + 1} / ${currentGallery.length}`;
+        const btns = document.querySelectorAll('#lightbox .slider-btn');
+        btns.forEach(b => b.style.display = currentGallery.length > 1 ? 'flex' : 'none');
+    }
+
+    function changeLightboxSlide(dir) {
+        galleryIndex = (galleryIndex + dir + currentGallery.length) % currentGallery.length;
+        updateLightboxUI();
+    }
+
+    // --- INITIALIZE EVERYTHING ---
+    fetchLogos();
+    fetchLatestAdditions();
+    filterVault('originals');
 </script>
-
 <!-- Lightbox Overlay -->
 <div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex flex-col items-center justify-center p-4">
     
