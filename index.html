@@ -450,28 +450,32 @@ h1 {
         }
     }
 
-    function updateSlideUI(slotIndex) {
-        const slider = latestSlideshows[slotIndex];
-        const file = slider.files[slider.currentIndex];
+   function updateSlideUI(slotIndex) {
+    const slider = latestSlideshows[slotIndex];
+    const file = slider.files[slider.currentIndex];
+    
+    const img = document.getElementById(`img-${slotIndex}`);
+    const title = document.getElementById(`title-${slotIndex}`);
+    const counter = document.getElementById(`counter-${slotIndex}`);
+
+    img.style.opacity = '0.3';
+    setTimeout(() => {
+        img.src = `latest_releases/${file.name}`;
         
-        const img = document.getElementById(`img-${slotIndex}`);
-        const title = document.getElementById(`title-${slotIndex}`);
-        const counter = document.getElementById(`counter-${slotIndex}`);
-
-        img.style.opacity = '0.3';
-        setTimeout(() => {
-            img.src = `latest_releases/${file.name}`;
-            title.innerText = file.name.split('-')[1]?.replace(/_/g, ' ') || 'New Model';
-            if(counter) counter.innerText = `${slider.currentIndex + 1} / ${slider.files.length}`;
-            img.style.opacity = '1';
-        }, 200);
-    }
-
-    function changeSlide(slotIndex, direction) {
-        const slider = latestSlideshows[slotIndex];
-        slider.currentIndex = (slider.currentIndex + direction + slider.files.length) % slider.files.length;
-        updateSlideUI(slotIndex);
-    }
+        // CLEANING LOGIC:
+        // 1. Get name after hyphen (Model Name)
+        let cleanName = file.name.split('-')[1] || 'New Model';
+        // 2. Remove the file extension (e.g., .webp)
+        cleanName = cleanName.split('.')[0];
+        // 3. Remove trailing numbers (e.g., _1, _2) and underscores
+        cleanName = cleanName.replace(/_\d+$/, '').replace(/_/g, ' ');
+        
+        title.innerText = cleanName;
+        
+        if(counter) counter.innerText = `${slider.currentIndex + 1} / ${slider.files.length}`;
+        img.style.opacity = '1';
+    }, 200);
+}
 
     fetchLatestAdditions();
 
