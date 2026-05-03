@@ -519,27 +519,40 @@ async function filterVault(category) {
         // 4. Render the Grid
         grid.innerHTML = ''; 
         files.forEach(file => {
-            const displayName = file.name.split('.')[0].replace(/_/g, ' ');
+            let artistName = "";
+            let modelName = "";
+
+            if (category === 'donations') {
+                // Splits "Artist-Model.jpg" into ["Artist", "Model.jpg"]
+                const parts = file.name.split('-');
+                if (parts.length > 1) {
+                    artistName = parts[0].replace(/_/g, ' ');
+                    modelName = parts[1].split('.')[0].replace(/_/g, ' ');
+                } else {
+                    // Fallback if no hyphen is found
+                    artistName = "Contributor";
+                    modelName = file.name.split('.')[0].replace(/_/g, ' ');
+                }
+            } else {
+                // Standard behavior for Originals and Freebies
+                modelName = file.name.split('.')[0].replace(/_/g, ' ');
+            }
             
             grid.innerHTML += `
                 <div class="group bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-800 hover:border-zinc-600 transition-all duration-300">
                     <div class="aspect-square overflow-hidden bg-black">
                         <img src="${folder}/${file.name}" 
-                             alt="${displayName}" 
+                             alt="${modelName}" 
                              class="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500"
                              loading="lazy">
                     </div>
                     <div class="p-3">
-                        <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest truncate">${displayName}</p>
+                        ${artistName ? `<p class="text-[9px] font-bold text-[#c7ff2e] uppercase tracking-widest mb-1">${artistName}</p>` : ''}
+                        <p class="text-[10px] font-black text-zinc-500 uppercase tracking-widest truncate">${modelName}</p>
                     </div>
                 </div>
             `;
         });
-    } catch (error) {
-        console.error("Vault fetch failed:", error);
-        grid.innerHTML = '<div class="text-red-900 col-span-full">Error: Connection to Vault lost.</div>';
-    }
-}
 
 // Initialize the Vault on page load
 filterVault('originals');
