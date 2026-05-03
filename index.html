@@ -580,39 +580,39 @@ filterVault('originals');
 </script>
 
 <!-- Lightbox Overlay -->
-<div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex flex-col items-center justify-center">
+<div id="lightbox" class="fixed inset-0 z-[100] bg-black/90 hidden flex items-center justify-center p-4 backdrop-blur-sm">
     
-    <!-- Close Button -->
-    <button onclick="closeLightbox()" class="absolute top-8 right-8 text-white hover:text-[#c7ff2e] transition-colors z-[110]">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-    </button>
-
-    <!-- Content Wrapper -->
-    <div class="flex flex-col items-center justify-center w-full max-w-6xl px-4">
+    <!-- The Modal Box -->
+    <div class="relative bg-zinc-900 border border-zinc-800 rounded-3xl p-4 md:p-8 max-w-5xl w-full shadow-[0_0_50px_rgba(0,0,0,0.5)] flex flex-col items-center">
         
-        <!-- Image & Controls Row -->
-        <div class="flex items-center justify-center w-full gap-4 md:gap-8">
+        <!-- Close Button (Positioned relative to the Modal Box) -->
+        <button onclick="closeLightbox()" class="absolute -top-4 -right-4 bg-[#c7ff2e] text-black rounded-full p-2 hover:scale-110 transition-transform shadow-lg z-[110]">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
+        <!-- Image & Navigation -->
+        <div class="relative flex items-center justify-center w-full group">
             
-            <!-- Prev Button - !static overrides your absolute CSS -->
-            <button onclick="changeLightboxSlide(-1)" class="slider-btn prev !static !transform-none shrink-0">
+            <!-- Prev Button -->
+            <button onclick="changeLightboxSlide(-1)" class="slider-btn prev !static !transform-none shrink-0 mr-4 md:mr-8">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M15 19l-7-7 7-7" /></svg>
             </button>
             
-            <!-- The Image -->
-            <div class="relative">
-                <img id="lightbox-img" src="" class="max-h-[75vh] max-w-full rounded-lg shadow-2xl border border-zinc-800 object-contain">
-            </div>
+            <!-- Image with specific constraints to keep the modal tidy -->
+            <img id="lightbox-img" src="" class="max-h-[60vh] md:max-h-[70vh] w-auto rounded-xl border border-zinc-800 object-contain shadow-2xl">
             
             <!-- Next Button -->
-            <button onclick="changeLightboxSlide(1)" class="slider-btn next !static !transform-none shrink-0">
+            <button onclick="changeLightboxSlide(1)" class="slider-btn next !static !transform-none shrink-0 ml-4 md:ml-8">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M9 5l7 7-7 7" /></svg>
             </button>
         </div>
 
-        <!-- Caption Area -->
-        <div class="mt-8 text-center">
-            <h3 id="lightbox-title" class="text-[#c7ff2e] text-2xl md:text-3xl font-black uppercase tracking-[0.2em]"></h3>
-            <p id="lightbox-counter" class="text-zinc-500 font-mono mt-2 text-sm tracking-widest"></p>
+        <!-- Caption Area inside the box -->
+        <div class="mt-6 text-center">
+            <h3 id="lightbox-title" class="text-white text-xl md:text-2xl font-black uppercase tracking-wider"></h3>
+            <div id="lightbox-counter" class="inline-block mt-2 px-3 py-1 bg-black rounded-full text-[#c7ff2e] font-mono text-xs border border-[#c7ff2e]/20"></div>
         </div>
         
     </div>
