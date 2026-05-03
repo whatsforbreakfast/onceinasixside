@@ -527,7 +527,8 @@ h1 {
 
                 const card = document.createElement('div');
                 card.className = "group bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-800 hover:border-[#c7ff2e]/50 cursor-pointer transition-all duration-300";
-                card.onclick = () => openLightbox(groupFiles, folder, modelName);
+                // We now pass both the model name AND the artist name
+card.onclick = () => openLightbox(groupFiles, folder, modelName, artistName);
 
                 card.innerHTML = `
                     <div class="aspect-square overflow-hidden bg-black relative">
@@ -548,13 +549,18 @@ h1 {
     }
 
     // --- LIGHTBOX CONTROLS ---
-    function openLightbox(files, folder, title) {
-        currentGallery = files.map(f => `https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${f.name}`);
-        galleryIndex = 0;
-        document.getElementById('lightbox-title').innerText = title;
-        document.getElementById('lightbox').classList.remove('hidden');
-        updateLightboxUI();
-    }
+   // Added 'artist = ""' as a new parameter
+function openLightbox(files, folder, title, artist = "") {
+    currentGallery = files.map(f => `https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${f.name}`);
+    galleryIndex = 0;
+    
+    // This line sends the artist name to that <p id="lightbox-artist"> tag you added
+    document.getElementById('lightbox-artist').innerText = artist;
+    
+    document.getElementById('lightbox-title').innerText = title;
+    document.getElementById('lightbox').classList.remove('hidden');
+    updateLightboxUI();
+}
 
     function closeLightbox() {
         document.getElementById('lightbox').classList.add('hidden');
@@ -609,6 +615,7 @@ h1 {
 
         <!-- Caption Area -->
         <div class="mt-8 text-center">
+            <p id="lightbox-artist" class="text-zinc-500 uppercase text-[10px] font-black tracking-[0.3em] mb-2"></p>
             <h3 id="lightbox-title" class="text-[#c7ff2e] text-2xl md:text-3xl font-black uppercase tracking-[0.2em]"></h3>
             <p id="lightbox-counter" class="text-zinc-500 font-mono mt-2 text-sm tracking-widest"></p>
         </div>
