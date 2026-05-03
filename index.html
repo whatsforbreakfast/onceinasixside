@@ -450,6 +450,12 @@ h1 {
                 `;
             });
 
+function changeSlide(slotIndex, direction) {
+    const slider = latestSlideshows[slotIndex];
+    slider.currentIndex = (slider.currentIndex + direction + slider.files.length) % slider.files.length;
+    updateSlideUI(slotIndex);
+}
+            
    function updateSlideUI(slotIndex) {
     const slider = latestSlideshows[slotIndex];
     const file = slider.files[slider.currentIndex];
