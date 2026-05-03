@@ -202,9 +202,10 @@ h1 {
 }
 
 .vault-tab.active {
-    background: #27272a; /* zinc-800 */
+    background: #18181b; /* zinc-900 darker */
     color: #c7ff2e;
-    box-shadow: 0 0 15px rgba(199, 255, 46, 0.1);
+    box-shadow: 0 0 15px rgba(199, 255, 46, 0.15);
+    border: 1px solid rgba(199, 255, 46, 0.2);
 }
         
     </style>
@@ -235,20 +236,27 @@ h1 {
 </section>
 
 
-    <section class="max-w-7xl mx-auto px-6 py-12">
-    <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
-        <div>
-            <div class="w-1 h-8 bg-zinc-500 mb-2"></div>
-            <h2 class="text-2xl font-black uppercase tracking-wider">The Vault</h2>
+   <section class="max-w-7xl mx-auto px-6 py-12">
+    <!-- Header synced with Latest Additions style -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
+        <div class="flex items-center gap-3 self-start">
+            <div class="w-1 h-8 bg-[#c7ff2e]"></div>
+            <h2 class="text-2xl font-black uppercase tracking-wider">What's in the welcome pack?</h2>
         </div>
         
         <!-- Category Toggles -->
-        <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+        <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800 self-center md:self-auto">
             <button onclick="filterVault('originals')" class="vault-tab active">Originals</button>
             <button onclick="filterVault('donations')" class="vault-tab">Donations</button>
             <button onclick="filterVault('free')" class="vault-tab">Free Samples</button>
         </div>
     </div>
+
+    <!-- The Grid -->
+    <div id="vault-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div class="text-zinc-500 animate-pulse">Scanning frequency...</div>
+    </div>
+</section>
 
     <!-- This grid will be cleared and repopulated by JS -->
     <div id="vault-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
