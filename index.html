@@ -189,6 +189,23 @@ h1 {
     letter-spacing: 0.3em;
     font-weight: bold;
 }
+
+.vault-tab {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transition: all 0.3s ease;
+    color: #71717a; /* zinc-400 */
+}
+
+.vault-tab.active {
+    background: #27272a; /* zinc-800 */
+    color: #c7ff2e;
+    box-shadow: 0 0 15px rgba(199, 255, 46, 0.1);
+}
         
     </style>
 </head>
@@ -231,6 +248,27 @@ h1 {
 
             </div>
     </section>
+
+    <section class="max-w-7xl mx-auto px-6 py-12">
+    <div class="flex flex-col md:flex-row justify-between items-end mb-8 gap-4">
+        <div>
+            <div class="w-1 h-8 bg-zinc-500 mb-2"></div>
+            <h2 class="text-2xl font-black uppercase tracking-wider">The Vault</h2>
+        </div>
+        
+        <!-- Category Toggles -->
+        <div class="flex bg-zinc-900 p-1 rounded-xl border border-zinc-800">
+            <button onclick="filterVault('originals')" class="vault-tab active">Originals</button>
+            <button onclick="filterVault('donations')" class="vault-tab">Donations</button>
+            <button onclick="filterVault('free')" class="vault-tab">Free Samples</button>
+        </div>
+    </div>
+
+    <!-- This grid will be cleared and repopulated by JS -->
+    <div id="vault-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div class="text-zinc-500">Scanning frequency...</div>
+    </div>
+</section>
 
 <!-- Partner Logo Carousel -->
 <section class="py-12 bg-zinc-950 overflow-hidden border-t border-zinc-900">
