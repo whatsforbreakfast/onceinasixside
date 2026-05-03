@@ -407,7 +407,7 @@ h1 {
                 groups[artistKey].push(file);
             });
 
-            const sortedArtists = Object.keys(groups).sort((a, b) => {
+           const sortedArtists = Object.keys(groups).sort((a, b) => {
                 return groups[b][0].name.localeCompare(groups[a][0].name);
             }).slice(0, 2);
 
@@ -419,6 +419,10 @@ h1 {
                     files: artistFiles,
                     currentIndex: 0
                 };
+
+                // CLEAN INITIAL NAME
+                let cleanName = artistFiles[0].name.split('-')[1] || 'New Model';
+                cleanName = cleanName.split('.')[0].replace(/_\d+$/, '').replace(/_/g, ' ');
 
                 grid.innerHTML += `
                     <div class="group relative bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 transition-all hover:border-[#c7ff2e]/30">
@@ -440,15 +444,11 @@ h1 {
                                 <p class="latest-artist-label">${artistKey.replace(/_/g, ' ')}</p>
                                 ${artistFiles.length > 1 ? `<span class="counter-badge" id="counter-${slotIndex}">1 / ${artistFiles.length}</span>` : ''}
                             </div>
-                            <h3 id="title-${slotIndex}" class="text-2xl font-black text-white uppercase">${artistFiles[0].name.split('-')[1]?.replace(/_/g, ' ') || 'New Model'}</h3>
+                            <h3 id="title-${slotIndex}" class="text-2xl font-black text-white uppercase">${cleanName}</h3>
                         </div>
                     </div>
                 `;
             });
-        } catch (error) {
-            console.error("Error fetching latest additions:", error);
-        }
-    }
 
    function updateSlideUI(slotIndex) {
     const slider = latestSlideshows[slotIndex];
