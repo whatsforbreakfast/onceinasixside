@@ -582,6 +582,12 @@ function openLightbox(files, folder, title, artist = "") {
     fetchLogos();
     fetchLatestAdditions();
     filterVault('originals');
+
+function togglePrivacy() {
+    const modal = document.getElementById('privacy-modal');
+    modal.classList.toggle('hidden');
+}
+    
 </script>
 <!-- Lightbox Overlay -->
 <div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex flex-col items-center justify-center p-4">
@@ -623,5 +629,31 @@ function openLightbox(files, folder, title, artist = "") {
     </div>
 </div>
 
+<!-- Footer Area -->
+<footer class="py-10 border-t border-zinc-800 mt-20 text-center">
+    <div class="flex flex-col md:flex-row justify-center items-center gap-6 text-zinc-500 text-xs uppercase tracking-widest">
+        <p>&copy; 2026 ONCE IN A SIX SIDE</p>
+        <a href="mailto:inquiries@onceinasixside.com" class="hover:text-[#c7ff2e] transition-colors underline decoration-zinc-700 underline-offset-4">Contact</a>
+        <button onclick="togglePrivacy()" class="hover:text-[#c7ff2e] transition-colors underline decoration-zinc-700 underline-offset-4 cursor-pointer">Privacy Policy</button>
+    </div>
+</footer>
+
+<!-- Simple Privacy Modal -->
+<div id="privacy-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+    <div class="bg-zinc-900 border border-zinc-800 p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto rounded-lg">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-[#c7ff2e] text-xl font-black uppercase tracking-widest">Privacy Policy</h2>
+            <button onclick="togglePrivacy()" class="text-zinc-500 hover:text-white text-2xl">&times;</button>
+        </div>
+        <div class="text-zinc-400 text-sm leading-relaxed space-y-4 font-sans text-left">
+            <p><strong>Overview:</strong> Once In A Six Side is a static gallery. We do not personally collect, store, or sell any user data.</p>
+            <p><strong>Hosting:</strong> This site is hosted by GitHub Pages. They may collect server logs including IP addresses for security and operational purposes. You can view GitHub's privacy policy on their official website.</p>
+            <p><strong>External Links:</strong> We provide links to third-party platforms like Patreon and Buy Me A Coffee. Once you leave our site, their respective privacy policies apply.</p>
+            <p><strong>Cookies:</strong> This site does not use tracking cookies or analytics scripts.</p>
+            <p><strong>Contact:</strong> For any privacy concerns, contact inquiries@onceinasixside.com.</p>
+        </div>
+    </div>
+</div>
+    
 </body>
 </html>
