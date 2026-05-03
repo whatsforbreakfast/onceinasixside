@@ -153,28 +153,25 @@ h1 {
     stroke-width: 4px; /* Makes the black arrow much bolder */
 }
 
-/* Bigger, High-Impact Counter Badge */
+/* Sleek, Subtle Counter Badge */
 .counter-badge {
     background: #000;
     color: #c7ff2e; 
-    padding: 6px 16px; /* Increased padding */
-    border-radius: 4px; /* Squarer, more industrial look */
+    padding: 2px 10px;
+    border-radius: 4px;
     font-family: 'Inter', sans-serif;
-    font-size: 1rem; /* Much larger text */
-    font-weight: 950; /* Extra chunky */
-    letter-spacing: 0.15em;
-    border: 2px solid #c7ff2e; /* Thicker, solid green border */
-    box-shadow: 0 0 15px rgba(199, 255, 46, 0.4); /* Neon glow effect */
+    font-size: 0.75rem; /* Smaller text */
+    font-weight: 900;
+    letter-spacing: 0.1em;
+    border: 1px solid #c7ff2e;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 70px;
-    text-shadow: 0 0 5px rgba(199, 255, 46, 0.5); /* Glow on the text itself */
 }
 
-/* Forces the artist name to be bold and large */
+/* Reverting Artist Name to subtle style */
 .latest-artist-label {
-    font-size: 1.1rem !important;
+    font-size: 0.75rem !important; /* Back to small */
     letter-spacing: 0.15em !important;
     font-weight: 900 !important;
     color: #c7ff2e !important;
@@ -404,21 +401,38 @@ async function fetchLatestAdditions() {
                 currentIndex: 0
             };
 
-            grid.innerHTML += `
-                <div class="group relative bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 transition-all hover:border-[#c7ff2e]/30">
-                    <div class="aspect-video w-full overflow-hidden relative bg-black">
-                        <img src="${folder}/${artistFiles[0].name}" id="img-${slotIndex}" class="w-full h-full object-cover">
-                        
-                        <!-- Persistent Controls -->
-                        ${artistFiles.length > 1 ? `
-                            <button onclick="changeSlide(${slotIndex}, -1)" class="slider-btn prev" aria-label="Previous">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M15 19l-7-7 7-7" /></svg>
-                            </button>
-                            <button onclick="changeSlide(${slotIndex}, 1)" class="slider-btn next" aria-label="Next">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M9 5l7 7-7 7" /></svg>
-                            </button>
-                        ` : ''}
-                    </div>
+sortedArtists.forEach((artistKey, slotIndex) => {
+    const artistFiles = groups[artistKey];
+    latestSlideshows[slotIndex] = {
+        files: artistFiles,
+        currentIndex: 0
+    };
+
+    grid.innerHTML += `
+        <div class="group relative bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 transition-all hover:border-[#c7ff2e]/30">
+            <div class="aspect-video w-full overflow-hidden relative bg-black">
+                <img src="${folder}/${artistFiles[0].name}" id="img-${slotIndex}" class="w-full h-full object-cover">
+                
+                ${artistFiles.length > 1 ? `
+                    <button onclick="changeSlide(${slotIndex}, -1)" class="slider-btn prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <button onclick="changeSlide(${slotIndex}, 1)" class="slider-btn next">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                ` : ''}
+            </div>
+
+            <div class="p-8">
+                <div class="flex justify-between items-center mb-3">
+                    <p class="latest-artist-label">${artistKey.replace(/_/g, ' ')}</p>
+                    ${artistFiles.length > 1 ? `<span class="counter-badge" id="counter-${slotIndex}">1 / ${artistFiles.length}</span>` : ''}
+                </div>
+                <h3 id="title-${slotIndex}" class="text-2xl font-black text-white uppercase">${artistFiles[0].name.split('-')[1]?.replace(/_/g, ' ') || 'New Model'}</h3>
+            </div>
+        </div>
+    `;
+});
 
                     <div class="p-8">
                         <div class="flex justify-between items-center mb-2">
@@ -440,24 +454,20 @@ async function fetchLatestAdditions() {
 function updateSlideUI(slotIndex) {
     const slider = latestSlideshows[slotIndex];
     const file = slider.files[slider.currentIndex];
-    // Add this inside the setTimeout in your updateSlideUI function
-const dateLabel = img.closest('.group').querySelector('.latest-date');
-if(dateLabel) dateLabel.innerText = file.name.split('-')[3]?.split('.')[0] || '';
+    
     const img = document.getElementById(`img-${slotIndex}`);
     const title = document.getElementById(`title-${slotIndex}`);
-    const desc = document.getElementById(`desc-${slotIndex}`);
     const counter = document.getElementById(`counter-${slotIndex}`);
 
-    img.style.opacity = '0.3';
+    img.style.opacity = '0';
     setTimeout(() => {
         img.src = `latest_releases/${file.name}`;
         title.innerText = file.name.split('-')[1]?.replace(/_/g, ' ') || 'New Model';
-        desc.innerText = file.name.split('-')[2]?.split('.')[0].replace(/_/g, ' ') || 'Latest addition.';
         if(counter) counter.innerText = `${slider.currentIndex + 1} / ${slider.files.length}`;
         img.style.opacity = '1';
     }, 200);
 }
-
+    
 function changeSlide(slotIndex, direction) {
     const slider = latestSlideshows[slotIndex];
     slider.currentIndex = (slider.currentIndex + direction + slider.files.length) % slider.files.length;
