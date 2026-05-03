@@ -222,21 +222,8 @@ h1 {
         </div>
     </header>
 
-  <!-- Latest Additions Section -->
+<!-- THE VAULT SECTION -->
 <section class="max-w-7xl mx-auto px-6 py-12">
-    <div class="flex items-center gap-3 mb-8">
-        <div class="w-1 h-8 bg-[#c7ff2e]"></div>
-        <h2 class="text-2xl font-black uppercase tracking-wider">Latest Additions</h2>
-    </div>
-
-    <div id="latest-additions-grid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <!-- Script will inject the two latest models here -->
-        <div class="text-zinc-500 animate-pulse">Loading latest releases...</div>
-    </div>
-</section>
-
-
-   <section class="max-w-7xl mx-auto px-6 py-12">
     <!-- Header synced with Latest Additions style -->
     <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-6">
         <div class="flex items-center gap-3 self-start">
@@ -252,15 +239,14 @@ h1 {
         </div>
     </div>
 
+    <!-- NEW SUBHEADER MESSAGE -->
+    <div id="vault-subheader" class="mb-6 text-zinc-400 text-sm font-medium italic hidden">
+        Subscribers of the free tier on Patreon can access this collection of models.
+    </div>
+
     <!-- The Grid -->
     <div id="vault-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
         <div class="text-zinc-500 animate-pulse">Scanning frequency...</div>
-    </div>
-</section>
-
-    <!-- This grid will be cleared and repopulated by JS -->
-    <div id="vault-grid" class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
-        <div class="text-zinc-500">Scanning frequency...</div>
     </div>
 </section>
 
@@ -486,14 +472,23 @@ const vaultFolders = {
 async function filterVault(category) {
     const grid = document.getElementById('vault-grid');
     const buttons = document.querySelectorAll('.vault-tab');
+    const subheader = document.getElementById('vault-subheader'); // NEW: Finds the subheader
     
     // 1. Update Button Visuals
     buttons.forEach(btn => {
         btn.classList.remove('active');
+        // Match buttons based on internal text
         if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
     });
 
-    // 2. Show Loading State
+    // 2. Toggle Subheader Message (Only shows for 'free')
+    if (category === 'free') {
+        subheader.classList.remove('hidden');
+    } else {
+        subheader.classList.add('hidden');
+    }
+
+    // 3. Show Loading State
     grid.innerHTML = '<div class="text-zinc-500 animate-pulse col-span-full">Scanning directory...</div>';
 
     try {
@@ -501,7 +496,6 @@ async function filterVault(category) {
         const response = await fetch(`https://api.github.com/repos/${username}/${repo}/contents/${folder}`);
         const data = await response.json();
         
-        // Filter for images only
         const files = data.filter(file => file.name.match(/\.(png|jpe?g|webp|avif)$/i));
 
         if (files.length === 0) {
@@ -509,10 +503,9 @@ async function filterVault(category) {
             return;
         }
 
-        // 3. Render the Grid
+        // 4. Render the Grid
         grid.innerHTML = ''; 
         files.forEach(file => {
-            // Assumes filename format: "Model_Name.jpg"
             const displayName = file.name.split('.')[0].replace(/_/g, ' ');
             
             grid.innerHTML += `
