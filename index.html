@@ -172,13 +172,25 @@ h1 {
     text-shadow: 0 0 5px rgba(199, 255, 46, 0.5); /* Glow on the text itself */
 }
 
-        /* Making the Artist Name match the energy of the big badge */
+/* Forces the artist name to be bold and large */
 .latest-artist-label {
-    font-size: 0.9rem;
-    letter-spacing: 0.2em;
-    font-weight: 900;
-    color: #c7ff2e;
-    text-transform: uppercase;
+    font-size: 1.1rem !important;
+    letter-spacing: 0.15em !important;
+    font-weight: 900 !important;
+    color: #c7ff2e !important;
+    text-transform: uppercase !important;
+    margin: 0 !important;
+}
+
+/* Styling the date at the bottom to look like a Serial Number */
+.latest-date {
+    font-family: monospace;
+    color: #555; 
+    font-size: 0.85rem;
+    margin-top: 15px;
+    display: block;
+    letter-spacing: 0.3em;
+    font-weight: bold;
 }
         
     </style>
@@ -410,11 +422,12 @@ async function fetchLatestAdditions() {
 
                     <div class="p-8">
                         <div class="flex justify-between items-center mb-2">
-                            <p class="text-[#c7ff2e] font-black text-xs uppercase tracking-widest">${artistKey.replace(/_/g, ' ')}</p>
+                            <p class="latest-artist-label">${artistKey.replace(/_/g, ' ')}</p>
                             ${artistFiles.length > 1 ? `<span class="counter-badge" id="counter-${slotIndex}">1 / ${artistFiles.length}</span>` : ''}
                         </div>
                         <h3 id="title-${slotIndex}" class="text-2xl font-black mb-3 text-white uppercase">${artistFiles[0].name.split('-')[1]?.replace(/_/g, ' ') || 'New Model'}</h3>
                         <p id="desc-${slotIndex}" class="text-zinc-400 leading-relaxed">${artistFiles[0].name.split('-')[2]?.split('.')[0].replace(/_/g, ' ') || 'Latest addition.'}</p>
+                        <span class="latest-date">${artistFiles[0].name.split('-')[3]?.split('.')[0] || ''}</span>
                     </div>
                 </div>
             `;
@@ -427,7 +440,9 @@ async function fetchLatestAdditions() {
 function updateSlideUI(slotIndex) {
     const slider = latestSlideshows[slotIndex];
     const file = slider.files[slider.currentIndex];
-    
+    // Add this inside the setTimeout in your updateSlideUI function
+const dateLabel = img.closest('.group').querySelector('.latest-date');
+if(dateLabel) dateLabel.innerText = file.name.split('-')[3]?.split('.')[0] || '';
     const img = document.getElementById(`img-${slotIndex}`);
     const title = document.getElementById(`title-${slotIndex}`);
     const desc = document.getElementById(`desc-${slotIndex}`);
