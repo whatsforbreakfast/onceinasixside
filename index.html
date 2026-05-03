@@ -485,16 +485,15 @@ const vaultFolders = {
 async function filterVault(category) {
     const grid = document.getElementById('vault-grid');
     const buttons = document.querySelectorAll('.vault-tab');
-    const subheader = document.getElementById('vault-subheader'); // NEW: Finds the subheader
+    const subheader = document.getElementById('vault-subheader');
     
     // 1. Update Button Visuals
     buttons.forEach(btn => {
         btn.classList.remove('active');
-        // Match buttons based on internal text
         if(btn.innerText.toLowerCase().includes(category)) btn.classList.add('active');
     });
 
-    // 2. Toggle Subheader Message (Only shows for 'free')
+    // 2. Toggle Subheader Message
     if (category === 'free') {
         subheader.classList.remove('hidden');
     } else {
@@ -523,18 +522,15 @@ async function filterVault(category) {
             let modelName = "";
 
             if (category === 'donations') {
-                // Splits "Artist-Model.jpg" into ["Artist", "Model.jpg"]
                 const parts = file.name.split('-');
                 if (parts.length > 1) {
                     artistName = parts[0].replace(/_/g, ' ');
                     modelName = parts[1].split('.')[0].replace(/_/g, ' ');
                 } else {
-                    // Fallback if no hyphen is found
                     artistName = "Contributor";
                     modelName = file.name.split('.')[0].replace(/_/g, ' ');
                 }
             } else {
-                // Standard behavior for Originals and Freebies
                 modelName = file.name.split('.')[0].replace(/_/g, ' ');
             }
             
@@ -553,6 +549,11 @@ async function filterVault(category) {
                 </div>
             `;
         });
+    } catch (error) {
+        console.error("Vault fetch failed:", error);
+        grid.innerHTML = '<div class="text-red-900 col-span-full">Error: Connection to Vault lost.</div>';
+    }
+}
 
 // Initialize the Vault on page load
 filterVault('originals');
