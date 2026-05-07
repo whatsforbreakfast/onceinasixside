@@ -446,7 +446,6 @@ h1 {
                     currentIndex: 0
                 };
 
-                // CLEAN INITIAL NAME
                 let cleanName = artistFiles[0].name.split('-')[1] || 'New Model';
                 cleanName = cleanName.split('.')[0].replace(/_\d+$/, '').replace(/_/g, ' ');
 
@@ -502,7 +501,6 @@ h1 {
         }, 200);
     }
 
-    // --- THE VAULT LOGIC ---
     const vaultFolders = {
         originals: 'pack_originals',
         donations: 'pack_donations',
@@ -553,8 +551,7 @@ h1 {
 
                 const card = document.createElement('div');
                 card.className = "group bg-zinc-900/50 rounded-xl overflow-hidden border border-zinc-800 hover:border-[#c7ff2e]/50 cursor-pointer transition-all duration-300";
-                // We now pass both the model name AND the artist name
-card.onclick = () => openLightbox(groupFiles, folder, modelName, artistName);
+                card.onclick = () => openLightbox(groupFiles, folder, modelName, artistName);
 
                 card.innerHTML = `
                     <div class="aspect-square overflow-hidden bg-black relative">
@@ -574,19 +571,14 @@ card.onclick = () => openLightbox(groupFiles, folder, modelName, artistName);
         }
     }
 
-    // --- LIGHTBOX CONTROLS ---
-   // Added 'artist = ""' as a new parameter
-function openLightbox(files, folder, title, artist = "") {
-    currentGallery = files.map(f => `https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${f.name}`);
-    galleryIndex = 0;
-    
-    // This line sends the artist name to that <p id="lightbox-artist"> tag you added
-    document.getElementById('lightbox-artist').innerText = artist;
-    
-    document.getElementById('lightbox-title').innerText = title;
-    document.getElementById('lightbox').classList.remove('hidden');
-    updateLightboxUI();
-}
+    function openLightbox(files, folder, title, artist = "") {
+        currentGallery = files.map(f => `https://cdn.jsdelivr.net/gh/${username}/${repo}@main/${folder}/${f.name}`);
+        galleryIndex = 0;
+        document.getElementById('lightbox-artist').innerText = artist;
+        document.getElementById('lightbox-title').innerText = title;
+        document.getElementById('lightbox').classList.remove('hidden');
+        updateLightboxUI();
+    }
 
     function closeLightbox() {
         document.getElementById('lightbox').classList.add('hidden');
@@ -604,43 +596,33 @@ function openLightbox(files, folder, title, artist = "") {
         updateLightboxUI();
     }
 
-    // --- INITIALIZE EVERYTHING ---
+    function togglePrivacy() {
+        const modal = document.getElementById('privacy-modal');
+        modal.classList.toggle('hidden');
+    }
+
+    // --- GOAL METER LOGIC ---
+    function updateGoalMeter(current, target) {
+        const percentage = Math.round((current / target) * 100);
+        const fillBar = document.getElementById('goal-fill');
+        const percentText = document.getElementById('goal-percent');
+        const currentText = document.getElementById('goal-current');
+        
+        setTimeout(() => {
+            if(fillBar) fillBar.style.width = percentage + "%";
+            if(percentText) percentText.innerText = percentage + "%";
+            if(currentText) currentText.innerText = current.toLocaleString(); 
+        }, 500);
+    }
+
+    // --- INITIALIZE ---
     fetchLogos();
     fetchLatestAdditions();
     filterVault('originals');
+    updateGoalMeter(3091, 4000); // Put your numbers here
 
-function togglePrivacy() {
-    const modal = document.getElementById('privacy-modal');
-    modal.classList.toggle('hidden');
-}
-
-// script for the goal progress meter
-function updateGoalMeter(current, target) {
-    const percentage = Math.round((current / target) * 100);
-    const fillBar = document.getElementById('goal-fill');
-    const percentText = document.getElementById('goal-percent');
-    const currentText = document.getElementById('goal-current'); // New line
-    
-    setTimeout(() => {
-        fillBar.style.width = percentage + "%";
-        percentText.innerText = percentage + "%";
-        // This line formats the number with a comma (e.g., 3,091)
-        currentText.innerText = current.toLocaleString(); 
-    }, 500);
-}
-    
-    // Set the width after a slight delay so users see it "grow"
-    setTimeout(() => {
-        fillBar.style.width = percentage + "%";
-        percentText.innerText = percentage + "%";
-    }, 500);
-}
-
-// Call the function with your current numbers
-updateGoalMeter(3091, 4000);
-
-    
 </script>
+    
 <!-- Lightbox Overlay -->
 <div id="lightbox" class="fixed inset-0 z-[100] bg-black/95 hidden flex flex-col items-center justify-center p-4">
     
